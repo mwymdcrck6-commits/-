@@ -76,7 +76,7 @@ ACCOUNTS: List[Dict] = [
 
 def main():
     st.set_page_config(page_title="Тест по Плану счетов", layout="centered")
-    st.title("🧾 Тестирование знаний по Плану счетов бухгалтерского учёта")
+    st.title("Тестирование знаний по Плану счетов бухгалтерского учёта")
     st.markdown("**Приказ Минфина РФ № 94н**")
 
     with st.sidebar:
