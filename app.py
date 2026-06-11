@@ -71,6 +71,7 @@ def main():
                 st.session_state.test_started = True
                 st.session_state.current = 0
                 st.session_state.score = 0
+                st.session_state.user_answer = ""
 
                 st.session_state.questions = random.sample(ACCOUNTS, num_questions)
                 st.rerun()
@@ -83,7 +84,9 @@ def main():
                 st.info(f"**{q['name']}**")
 
                 if mode == "Ввод номера":
-                    user_answer = st.text_input("Введите номер", placeholder="01")
+                    answer_key = f"answer_{st.session_state.current}"
+                    user_answer = st.text_input("Введите номер", key=answer_key, placeholder="01")
+
                     if st.button("Проверить"):
                         if user_answer.strip() == q['number']:
                             st.success(f"✅ Верно! Номер: {q['number']}")
@@ -92,6 +95,7 @@ def main():
                             st.error(f"❌ Неверно. Правильный номер: {q['number']}")
 
                         st.session_state.current += 1
+                        st.experimental_set_query_params()  # Очистка старого поля ввода
                         st.rerun()
                 else:
                     options = [q["number"]] + random.sample(
