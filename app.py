@@ -31,7 +31,7 @@ def main():
     st.title("🧾 Тест: План счетов")  # Укороченное название для компактности
     st.caption("Приказ Минфина РФ № 94н • Полный список счетов")
 
-    tab1, tab2, tab3 = st.tabs(["🧪 Тест", "📖 Справочник", "📊 Результаты"])
+    tab1, tab2 = st.tabs(["🧪 Тест", "📖 Справочник"])
 
     with tab1:
         with st.sidebar:
@@ -50,13 +50,13 @@ def main():
                 st.session_state.test_started = True
                 st.session_state.current = 0
                 st.session_state.score = 0
-                st.session_state.answers = []
-                
+                st.session_state.questions = []
+
                 if test_mode == "По разделу" and selected_section:
                     filtered = [acc for acc in ACCOUNTS if acc["section"] == selected_section]
                 else:
                     filtered = ACCOUNTS.copy()
-                
+
                 st.session_state.questions = random.sample(filtered, min(num_questions, len(filtered)))
                 st.rerun()
 
@@ -77,7 +77,6 @@ def main():
                             st.session_state.score += 1
                         else:
                             st.error(f"❌ Ошибка. Ответ: **{correct}**")
-                        st.session_state.answers.append({"q": q["name"], "user": user_answer.strip(), "correct": correct})
                         st.session_state.current += 1
                         st.rerun()
                 else:
@@ -96,11 +95,11 @@ def main():
                                 st.session_state.score += 1
                             else:
                                 st.error(f"❌ Ошибка: **{q['number']}**")
-                            st.session_state.answers.append({"q": q["name"], "user": opt, "correct": q["number"]})
                             st.session_state.current += 1
                             st.rerun()
             else:
-                st.success(f"🎉 Результат: {st.session_state.score} / {len(st.session_state.questions)}")
+                st.success(f"🎉 Тест завершён! Ваш результат: {st.session_state.score} из {len(st.session_state.questions)}")
+                # Сохранить состояние для нового теста
                 if st.button("🔄 Новый тест"):
                     st.session_state.test_started = False
                     st.rerun()
@@ -116,15 +115,6 @@ def main():
         
         for acc in filtered_accounts[:10]:  # Ограничение на вывод 10 элементов
             st.write(f"**{acc['number']}** — {acc['name']} ({acc['type']}) • {acc['section']}")
-
-    with tab3:
-        if st.session_state.get('answers'):
-            st.subheader("🏁 Последние результаты")
-            for a in st.session_state.answers[-5:]:  # Ограничить до 5 записей
-                status = "✅" if a.get("user") == a.get("correct") else "❌"
-                st.write(f"{status} **{a['q']}** → `{a.get('user', '')}` | Правильный: `{a.get('correct', '')}`")
-        else:
-            st.info("Пройдите тест, чтобы увидеть результаты")
 
 if __name__ == "__main__":
     main()
